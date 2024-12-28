@@ -14,6 +14,8 @@ serialization = "1.6.3"
 navigationCompose = "2.8.0-beta02"
 navigationUiKtx = "2.7.7"
 material3Android = "1.3.1"
+runtimeLivedataVersion = "1.7.6"
+material3Lint = "1.4.0-alpha05"
 
 
 [libraries]
@@ -33,6 +35,8 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedataVersion" }
+androidx-material3-lint = { group = "androidx.compose.material3", name = "material3-lint", version.ref = "material3Lint" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

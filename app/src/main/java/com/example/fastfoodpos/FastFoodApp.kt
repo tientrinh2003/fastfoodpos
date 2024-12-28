@@ -1,36 +1,31 @@
 package com.example.fastfoodpos
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.material3.MaterialTheme
+import LoginScreen
+import MenuScreen
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.fastfoodpos.screen.CheckoutScreen
-import com.example.fastfoodpos.screen.CustomerScreen
-import com.example.fastfoodpos.screen.MenuScreen
-import com.example.fastfoodpos.screen.OrderScreen
-
-class FastFoodApp : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            FastFoodPOSApp()
-        }
-    }
-}
+import com.example.fastfoodpos.screen.CartScreen
+import com.example.fastfoodpos.screen.CartViewModel
+import com.example.fastfoodpos.screen.SuccessScreen
+import com.example.orderapp.ui.screen.CheckoutScreen
 
 @Composable
-fun FastFoodPOSApp() {
+fun FastFoodApp() {
     val navController = rememberNavController()
-    MaterialTheme {
-        NavHost(navController = navController, startDestination = "menu") {
-            composable("menu") { MenuScreen() }
-            composable("order") { OrderScreen() }
-            composable("checkout") { CheckoutScreen(totalAmount = 100.0) }
-            composable("customer") { CustomerScreen() }
+    NavHost(navController, startDestination = "login") {
+        composable("login") { LoginScreen { navController.navigate("menu") } }
+        composable("menu") { MenuScreen() }
+        composable("cart") { CartScreen { navController.navigate("checkout") } }
+        composable("checkout") {
+            val viewModel: CartViewModel = hiltViewModel()
+            val cartItems by viewModel.cartState.observeAsState(emptyList())
+            CheckoutScreen(cartItems = cartItems) { navController.navigate("success") }
         }
+        composable("success") { SuccessScreen { navController.navigate("menu") } }
     }
 }

@@ -2,7 +2,7 @@ package com.example.fastfoodpos.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.fastfoodpos.data.network.DTO.FoodItemDTO
+import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.domain.repository.FastFoodRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,10 +11,10 @@ import javax.inject.Inject
 
 class OrderViewModel @Inject constructor(private val repository: FastFoodRepository) : ViewModel() {
 
-    private val _orderItems = MutableStateFlow<List<FoodItemDTO>>(emptyList())
-    val orderItems: StateFlow<List<FoodItemDTO>> get() = _orderItems
+    private val _orderItems = MutableStateFlow<List<FoodItem>>(emptyList())
+    val orderItems: StateFlow<List<FoodItem>> get() = _orderItems
 
-    fun addOrderItem(item: FoodItemDTO) {
+    fun addOrderItem(item: FoodItem) {
         // Add item to the order
         _orderItems.value = _orderItems.value + item
     }

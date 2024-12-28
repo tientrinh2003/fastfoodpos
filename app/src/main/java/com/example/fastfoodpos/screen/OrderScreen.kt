@@ -16,7 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.fastfoodpos.data.network.DTO.FoodItemDTO
+import com.example.fastfoodpos.domain.model.FoodItem
 
 @Composable
 fun OrderScreen(viewModel: OrderViewModel = hiltViewModel()) {
@@ -42,7 +42,7 @@ fun OrderScreen(viewModel: OrderViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun OrderItemCard(item: FoodItemDTO) {
+fun OrderItemCard(item: FoodItem) {
     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
         Row(modifier = Modifier.padding(16.dp)) {
             // Use titleMedium instead of h6 for the food item name

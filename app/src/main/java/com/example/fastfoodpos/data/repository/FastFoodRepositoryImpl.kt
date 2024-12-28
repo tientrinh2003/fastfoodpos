@@ -1,11 +1,11 @@
 package com.example.fastfoodpos.data.repository
 
-import com.example.fastfoodpos.data.network.DTO.FoodItemDTO
 import com.example.fastfoodpos.data.network.FastFoodApi
 import com.example.fastfoodpos.data.room.DAO.MenuDao
 import com.example.fastfoodpos.data.room.DAO.OrderDao
 import com.example.fastfoodpos.data.room.Entity.OrderEntity
 import com.example.fastfoodpos.domain.model.Customer
+import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.domain.model.Order
 import com.example.fastfoodpos.domain.repository.FastFoodRepository
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +18,7 @@ class FastFoodRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao
 ) : FastFoodRepository {
 
-    override suspend fun fetchFoodItems(): List<FoodItemDTO> = withContext(Dispatchers.IO) {
+    override suspend fun fetchFoodItems(): List<FoodItem> = withContext(Dispatchers.IO) {
         try {
             val response = fastFoodApi.getFoodItems()
             if (response.isSuccessful) {

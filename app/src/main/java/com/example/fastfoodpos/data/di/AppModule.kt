@@ -3,10 +3,13 @@ package com.example.fastfoodpos.data.di
 import android.content.Context
 import androidx.room.Room
 import com.example.fastfoodpos.data.network.FastFoodApi
+import com.example.fastfoodpos.data.repository.CartRepositoryImpl
 import com.example.fastfoodpos.data.repository.FastFoodRepositoryImpl
 import com.example.fastfoodpos.data.room.AppDatabase
+import com.example.fastfoodpos.data.room.DAO.CartDAO
 import com.example.fastfoodpos.data.room.DAO.MenuDao
 import com.example.fastfoodpos.data.room.DAO.OrderDao
+import com.example.fastfoodpos.domain.repository.CartRepository
 import com.example.fastfoodpos.domain.repository.FastFoodRepository
 import dagger.Module
 import dagger.Provides
@@ -43,6 +46,15 @@ object AppModule {
         ).fallbackToDestructiveMigration().build()
     }
 
+    @Provides
+    fun provideCartDao(database: AppDatabase): CartDAO {
+        return database.cartDao()
+    }
+
+    @Provides
+    fun provideCartRepository(cartDao: CartDAO): CartRepository {
+        return CartRepositoryImpl(cartDao)
+    }
     @Provides
     @Singleton
     fun provideMenuDao(database: AppDatabase): MenuDao = database.menuDao()

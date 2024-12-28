@@ -1,8 +1,8 @@
 package com.example.fastfoodpos.domain.model
 
-data class FoodItem(
-    val id: Int,
+data class CartItem(
+    val foodId: Int,
     val name: String,
     val price: Double,
-    val imageUrl: String
+    var quantity: Int
 )
