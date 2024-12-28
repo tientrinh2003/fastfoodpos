@@ -5,15 +5,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.fastfoodpos.data.room.Entity.OrderEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OrderDao {
 
-    // Insert a new order into the database
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrder(order: OrderEntity)
 
-    // Fetch all orders from the database
     @Query("SELECT * FROM orders")
-    suspend fun getAllOrders(): List<OrderEntity> // Fetch all orders
+    fun getAllOrders(): Flow<List<OrderEntity>>
+
+    @Query("SELECT * FROM orders WHERE id = :id")
+    suspend fun getOrderById(id: Int): OrderEntity?
 }

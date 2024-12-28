@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "orders")
 data class OrderEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val orderDate: String, // Store date as a String or a proper Date type
+    val orderDate: String,
     val totalPrice: Double,
-    val items: String // You can store the items as a comma-separated list or JSON string
+    val items: List<String>
 )

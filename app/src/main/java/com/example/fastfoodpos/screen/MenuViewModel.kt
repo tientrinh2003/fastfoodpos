@@ -1,30 +1,36 @@
-package com.example.fastfoodpos.screen
+package com.example.fastfoodpos.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.domain.repository.FastFoodRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MenuViewModel @Inject constructor(private val repository: FastFoodRepository) : ViewModel() {
+@HiltViewModel
+class MenuViewModel @Inject constructor(
+    private val fastFoodRepository: FastFoodRepository
+) : ViewModel() {
 
-    private val _menuItems = MutableLiveData<List<FoodItem>>()
-    val menuItems: LiveData<List<FoodItem>> get() = _menuItems
+    private val _foodItems = MutableStateFlow<List<FoodItem>>(emptyList())
+    val foodItems: StateFlow<List<FoodItem>> = _foodItems
 
     init {
-        fetchMenuItems()
+        fetchFoodItems()
     }
 
-    private fun fetchMenuItems() {
+    fun fetchFoodItems() {
         viewModelScope.launch {
+            println("MenuViewModel: fetchFoodItems() called")
             try {
-                val foodItems = repository.fetchFoodItems()
-                _menuItems.value = foodItems
+                val items = fastFoodRepository.fetchFoodItems()
+                _foodItems.value = items
+                println("MenuViewModel: Food items fetched successfully: $items")
             } catch (e: Exception) {
-                // Handle the error gracefully (show error message, etc.)
+                println("MenuViewModel: Error fetching food items: ${e.message}")
             }
         }
     }

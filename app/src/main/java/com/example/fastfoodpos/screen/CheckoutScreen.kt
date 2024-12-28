@@ -1,8 +1,5 @@
 package com.example.orderapp.ui.screen
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -23,62 +21,51 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.fastfoodpos.domain.model.CartItem
 
-
 @Composable
-fun CheckoutScreen(cartItems: List<CartItem>, onPaymentSuccess: () -> Unit) {
-    var paymentMethod by remember { mutableStateOf("") }
+fun CheckoutScreen(
+    cartItems: List<CartItem>,
+    onPaymentSuccess: () -> Unit
+) {
+    var selectedPaymentMethod by remember { mutableStateOf("Cash") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text("Review Your Order", style = MaterialTheme.typography.titleLarge)
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Checkout", style = MaterialTheme.typography.displayLarge)
 
-        // Display Cart Items
-        cartItems.forEach {
-            Text("${it.name} x${it.quantity} - $${it.price * it.quantity}", style = MaterialTheme.typography.bodyMedium)
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Total Price
-        Text("Total: $${cartItems.sumOf { it.price * it.quantity }}", style = MaterialTheme.typography.titleMedium)
-
-        // Payment Method Selection
-        Text("Select Payment Method:", style = MaterialTheme.typography.bodyLarge)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Button(onClick = { paymentMethod = "Cash"; onPaymentSuccess() }) {
-                Text("Cash")
-            }
-            Button(onClick = { paymentMethod = "Internet Banking" }) {
-                Text("Internet Banking")
+        cartItems.forEach { item ->
+            Row(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                Text(text = "${item.name} x ${item.quantity}", modifier = Modifier.weight(1f))
+                Text(text = "\$${item.price * item.quantity}")
             }
         }
 
-        // QR Code Display (if Internet Banking is selected)
-        if (paymentMethod == "Internet Banking") {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("Scan the QR code to pay", style = MaterialTheme.typography.bodyMedium)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
-                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("QR Code Placeholder")
-            }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val totalPrice = cartItems.sumOf { it.price * it.quantity }
+        Text(text = "Total: \$${totalPrice}", style = MaterialTheme.typography.titleLarge)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(text = "Select Payment Method", style = MaterialTheme.typography.titleMedium)
+
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            RadioButton(selected = selectedPaymentMethod == "Cash", onClick = { selectedPaymentMethod = "Cash" })
+            Text(text = "Cash")
         }
 
-        // Finish Button
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            RadioButton(selected = selectedPaymentMethod == "Internet Banking", onClick = { selectedPaymentMethod = "Internet Banking" })
+            Text(text = "Internet Banking")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Button(
             onClick = onPaymentSuccess,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
         ) {
-            Text("Finish")
+            Text(text = "Finish")
         }
     }
 }

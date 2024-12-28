@@ -1,54 +1,55 @@
 package com.example.fastfoodpos.screen
 
-
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.fastfoodpos.domain.model.CartItem
 
-
 @Composable
-fun CartScreen(viewModel: CartViewModel = hiltViewModel(), onCheckout: () -> Unit) {
-    val cartItems by viewModel.cartState.observeAsState(emptyList())
+fun CartScreen(
+    viewModel: CartViewModel = hiltViewModel(),
+    onCheckoutClicked: () -> Unit
+) {
+    val cartItems = viewModel.cartState.collectAsState(initial = emptyList())
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(cartItems) { item ->
-                CartItemRow(item)
-            }
-        }
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Text(text = "Shopping Cart", style = MaterialTheme.typography.displayLarge)
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        cartItems.value.forEach { item ->
+            CartItemCard(item = item)
+        }
+
         Button(
-            onClick = onCheckout,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+            onClick = onCheckoutClicked,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
         ) {
-            Text("Checkout")
+            Text(text = "Proceed to Checkout")
         }
     }
 }
 
 @Composable
-fun CartItemRow(cartItem: CartItem) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-    ) {
-        Text("${cartItem.name} x${cartItem.quantity}")
-        Text("Price: $${cartItem.price * cartItem.quantity}")
+fun CartItemCard(item: CartItem) {
+    Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+        Row(modifier = Modifier.padding(16.dp)) {
+            Text(text = item.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+            Text(text = "Qty: ${item.quantity}", style = MaterialTheme.typography.bodyLarge)
+            Text(text = "\$${item.price * item.quantity}", style = MaterialTheme.typography.bodyLarge)
+        }
     }
 }

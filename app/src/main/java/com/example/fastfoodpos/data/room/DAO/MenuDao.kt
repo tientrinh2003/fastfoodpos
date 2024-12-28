@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MenuDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(foodItem: FoodItemEntity)
+    suspend fun insertFoodItems(foodItems: List<FoodItemEntity>)
 
-    @Query("SELECT * FROM menu_table")
-    fun getAllMenuItems(): Flow<List<FoodItemEntity>>
+    @Query("SELECT * FROM food_items")
+    fun getAllFoodItems(): Flow<List<FoodItemEntity>>
+
+    @Query("SELECT * FROM food_items WHERE id = :id")
+    fun getFoodItemById(id: Int): Flow<FoodItemEntity?>
 }
