@@ -21,8 +21,8 @@ class MenuViewModel @Inject constructor(
     val foodItems: StateFlow<MenuUiState> = _foodItems
 
     init {
-        fetchFoodItems()
         insertInitialData()
+        fetchFoodItems()
     }
 
     private fun fetchFoodItems() {
@@ -56,7 +56,7 @@ class MenuViewModel @Inject constructor(
                 is MenuUiState.Success -> state.foodItems.find { it.id == id }
                 else -> null
             }
-            }
+        }
     }
 
     private fun insertInitialData() {
@@ -65,38 +65,38 @@ class MenuViewModel @Inject constructor(
                 FoodItem(
                     id = 1,
                     name = "Burger",
-                    price = 5.99,
-                    imageResource = R.drawable.hamcheese
+                    price = 15.00,
+                    imageResource = "android.resource://com.example.fastfoodpos/${R.drawable.hamcheese}"
                 ),
                 FoodItem(
                     id = 2,
                     name = "Pizza",
-                    price = 8.99,
-                    imageResource = R.drawable.hamcheese
+                    price = 20.00,
+                    imageResource = "android.resource://com.example.fastfoodpos/${R.drawable.hamcheese}"
                 ),
                 FoodItem(
                     id = 3,
                     name = "Fries",
-                    price = 3.99,
-                    imageResource = R.drawable.hamcheese
+                    price = 8.00,
+                    imageResource = "android.resource://com.example.fastfoodpos/${R.drawable.hamcheese}"
                 ),
                 FoodItem(
                     id = 4,
                     name = "Coke",
-                    price = 2.99,
-                    imageResource = R.drawable.hamcheese
+                    price = 1.00,
+                    imageResource = "android.resource://com.example.fastfoodpos/${R.drawable.hamcheese}"
                 ),
                 FoodItem(
                     id = 5,
                     name = "Salad",
-                    price = 6.99,
-                    imageResource = R.drawable.hamcheese
+                    price = 5.00,
+                    imageResource = "android.resource://com.example.fastfoodpos/${R.drawable.hamcheese}"
                 ),
                 FoodItem(
                     id = 6,
                     name = "Ice Cream",
-                    price = 4.99,
-                    imageResource = R.drawable.hamcheese
+                    price = 3.00,
+                    imageResource = "android.resource://com.example.fastfoodpos/${R.drawable.hamcheese}"
                 )
             )
             try {

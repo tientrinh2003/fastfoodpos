@@ -1,7 +1,7 @@
 package com.example.fastfoodpos
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +15,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,7 +44,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
+import com.example.fastfoodpos.domain.model.CartItem
 import com.example.fastfoodpos.domain.model.FoodItem
+import com.example.fastfoodpos.screen.CartViewModel
 import com.example.fastfoodpos.viewmodel.MenuUiState
 import com.example.fastfoodpos.viewmodel.MenuViewModel
 
@@ -49,13 +55,15 @@ import com.example.fastfoodpos.viewmodel.MenuViewModel
 @Composable
 fun MenuScreen(
     viewModel: MenuViewModel = hiltViewModel(),
-    onCartClicked: () -> Unit
+    onCartClicked: () -> Unit,
+    onLogout: () -> Unit,
+    cartViewModel: CartViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.foodItems.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        val (foodList, titleText, subtitleText, cartButton, searchBar) = createRefs()
+        val (foodList, titleText, subtitleText, cartButton, searchBar, logoutButton) = createRefs()
 
         Text(
             text = "POSVN",
@@ -68,6 +76,23 @@ fun MenuScreen(
                     start.linkTo(parent.start, margin = 10.dp)
                 }
         )
+        IconButton(
+            onClick = onLogout,
+            modifier = Modifier
+                .size(48.dp)
+                .constrainAs(logoutButton) {
+                    top.linkTo(titleText.top)
+                    bottom.linkTo(titleText.bottom)
+                    end.linkTo(parent.end, margin = 10.dp)
+                }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Logout,
+                contentDescription = "Logout",
+                tint = Color.Black,
+                modifier = Modifier.size(30.dp)
+            )
+        }
 
         Text(
             text = "ORDER YOUR FAVOURITE FOOD!",
@@ -148,7 +173,9 @@ fun MenuScreen(
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                         bottom.linkTo(parent.bottom)
-                        height = androidx.constraintlayout.compose.Dimension.fillToConstraints // Ensure height matches constraints
+                        height = androidx.constraintlayout.compose.Dimension.fillToConstraints
+                    },
+                    onItemClick = { item -> cartViewModel.addToCart(CartItem(item.id, item.name, item.price, 1, item.imageResource))
                     }
                 )
             }
@@ -164,7 +191,6 @@ fun MenuScreen(
                 )
             }
             else -> {
-                // Handle any unexpected state
                 Text(
                     text = "Unknown State",
                     modifier = Modifier.constrainAs(foodList) {
@@ -179,9 +205,13 @@ fun MenuScreen(
     }
 }
 
-
 @Composable
-fun FoodList(menuItems: List<FoodItem>, searchQuery: String, modifier: Modifier = Modifier) {
+fun FoodList(
+    menuItems: List<FoodItem>,
+    searchQuery: String,
+    modifier: Modifier = Modifier,
+    onItemClick: (FoodItem) -> Unit
+) {
     val filteredItems = if (searchQuery.isBlank()) {
         menuItems
     } else {
@@ -194,13 +224,13 @@ fun FoodList(menuItems: List<FoodItem>, searchQuery: String, modifier: Modifier 
         modifier = modifier
     ) {
         items(filteredItems) { item ->
-            FoodItemCard(item = item)
+            FoodItemCard(item = item, onItemClick = onItemClick)
         }
     }
 }
 
 @Composable
-fun FoodItemCard(item: FoodItem) {
+fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -208,27 +238,29 @@ fun FoodItemCard(item: FoodItem) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            // Wrapping the Image inside a Box to control height dynamically
-            androidx.compose.foundation.layout.Box(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f) // Ensures a square aspect ratio
+                    .aspectRatio(1f)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
-                Image(
-                    painter = painterResource(id = item.imageResource),
+                AsyncImage(
+                    model = item.imageResource,
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize(), // Matches the parent Box size
-                    contentScale = ContentScale.Crop
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable._157846_200)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = item.name, style = MaterialTheme.typography.titleMedium)
             Text(text = "\$${item.price}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Quantity: ${item.quantity}", style = MaterialTheme.typography.bodyMedium)
-            
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(onClick = { onItemClick(item) }) {
+                Text("Add to Cart")
+            }
         }
     }
 }

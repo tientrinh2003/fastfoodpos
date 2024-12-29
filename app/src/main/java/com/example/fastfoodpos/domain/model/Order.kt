@@ -5,5 +5,5 @@ data class Order(
     val id: Int = 0,
     val orderDate: String,
     val totalPrice: Double,
-    val items: List<String>
+    val items: List<CartItem>
 )

@@ -3,7 +3,6 @@ package com.example.fastfoodpos.screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fastfoodpos.domain.model.CartItem
-import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.domain.model.Order
 import com.example.fastfoodpos.domain.repository.FastFoodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,39 +18,49 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderViewModel @Inject constructor(private val fastFoodRepository: FastFoodRepository) :
     ViewModel() {
-    private val _orderItems = MutableStateFlow<List<FoodItem>>(emptyList())
-    val orderItems: StateFlow<List<FoodItem>> = _orderItems
+    private val _orderSummaryItems = MutableStateFlow<List<CartItem>>(emptyList())
+    val orderItems: StateFlow<List<CartItem>> = _orderSummaryItems
     private var cartItems: List<CartItem> = emptyList()
+    private val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+
 
     fun setCartItems(items: List<CartItem>) {
         cartItems = items
-        _orderItems.value = items.map {
-            FoodItem(
+        _orderSummaryItems.value = items.map {
+            CartItem(
                 id = it.id,
                 name = it.name,
                 price = it.price,
-                imageResource = 0,
+                imageResource = it.imageResource,
                 quantity = it.quantity
             )
         }
     }
 
     fun submitOrder() {
+        if (cartItems.isEmpty()) {
+            // Handle empty cart case (e.g., show a message)
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
-            val order = createOrder()
-            fastFoodRepository.saveOrderToLocal(order)
+            try {
+                val order = createOrder()
+                fastFoodRepository.saveOrderToLocal(order)
+            } catch (e: Exception) {
+                // Handle database error (e.g., log the error)
+                e.printStackTrace()
+            }
         }
     }
 
     private fun createOrder(): Order {
-        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val currentDate = sdf.format(Date())
         val totalPrice = cartItems.sumOf { it.price * it.quantity }
-        val itemsName = cartItems.map { "${it.name} x ${it.quantity}" }
+        val formattedPrice = "%.2f".format(totalPrice).toDouble()
         return Order(
             orderDate = currentDate,
-            totalPrice = totalPrice,
-            items = itemsName
+            totalPrice = formattedPrice,
+            items = cartItems
         )
     }
 }

@@ -3,14 +3,17 @@ package com.example.fastfoodpos.di
 import android.content.Context
 import androidx.room.Room
 import com.example.fastfoodpos.data.repository.FastFoodRepositoryImpl
+import com.example.fastfoodpos.data.repository.UserRepositoryImpl
 import com.example.fastfoodpos.data.repository.impl.CartRepositoryImpl
 import com.example.fastfoodpos.data.room.AppDatabase
 import com.example.fastfoodpos.data.room.DAO.CartDAO
 import com.example.fastfoodpos.data.room.DAO.MenuDao
 import com.example.fastfoodpos.data.room.DAO.OrderDao
+import com.example.fastfoodpos.data.room.DAO.UserDao
 import com.example.fastfoodpos.data.room.MIGRATION_1_2
 import com.example.fastfoodpos.domain.repository.CartRepository
 import com.example.fastfoodpos.domain.repository.FastFoodRepository
+import com.example.fastfoodpos.domain.repository.UserRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,6 +58,11 @@ object AppModule {
     }
 
     @Provides
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDao()
+    }
+
+    @Provides
     @Singleton
     fun provideFastFoodRepository(
         menuDao: MenuDao,
@@ -67,5 +75,11 @@ object AppModule {
     @Singleton
     fun provideCartRepository(cartDao: CartDAO): CartRepository {
         return CartRepositoryImpl(cartDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(userDao: UserDao): UserRepository {
+        return UserRepositoryImpl(userDao)
     }
 }

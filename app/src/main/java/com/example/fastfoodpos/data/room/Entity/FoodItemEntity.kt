@@ -10,7 +10,7 @@ data class FoodItemEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     @ColumnInfo(name = "name") val name: String,
     @ColumnInfo(name = "price") val price: Double,
-    @ColumnInfo(name = "image_resource") val imageResource: Int,
+    @ColumnInfo(name = "image_resource") val imageResource: String,
     @ColumnInfo(name = "quantity") val quantity: Int
 )
 

@@ -17,8 +17,8 @@ class CartRepositoryImpl @Inject constructor(private val cartDao: CartDAO) : Car
         cartDao.updateCartItem(cartItem.toCartItemEntity())
     }
 
-    override suspend fun deleteCartItem(id: Int) {
-        cartDao.deleteCartItem(id)
+    override suspend fun deleteCartItem(cartItem: CartItem) {
+        cartDao.deleteCartItem(cartItem.toCartItemEntity().id)
     }
 
     override fun getAllCartItems(): Flow<List<CartItem>> {
@@ -42,7 +42,8 @@ fun CartItem.toCartItemEntity(): CartItemEntity {
         id = id,
         name = name,
         price = price,
-        quantity = quantity
+        quantity = quantity,
+        imageResource = imageResource
     )
 }
 
@@ -51,6 +52,7 @@ fun CartItemEntity.toCartItem(): CartItem {
         id = id,
         name = name,
         price = price,
-        quantity = quantity
+        quantity = quantity,
+        imageResource = imageResource
     )
 }

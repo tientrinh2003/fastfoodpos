@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.fastfoodpos.domain.model.FoodItem
+import com.example.fastfoodpos.domain.model.CartItem
 
 @Composable
 fun OrderScreen(
@@ -46,7 +46,7 @@ fun OrderScreen(
 }
 
 @Composable
-fun OrderItemCard(item: FoodItem) {
+fun OrderItemCard(item: CartItem) {
     Card(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
         Row(modifier = Modifier.padding(16.dp)) {
             Text(text = item.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
