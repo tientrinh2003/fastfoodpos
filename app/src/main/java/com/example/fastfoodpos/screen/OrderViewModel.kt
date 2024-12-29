@@ -30,7 +30,8 @@ class OrderViewModel @Inject constructor(private val fastFoodRepository: FastFoo
                 id = it.id,
                 name = it.name,
                 price = it.price,
-                imageResource = 0
+                imageResource = 0,
+                quantity = it.quantity
             )
         }
     }

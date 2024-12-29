@@ -10,7 +10,7 @@ import com.example.fastfoodpos.data.room.Entity.CartItemEntity
 import com.example.fastfoodpos.data.room.Entity.FoodItemEntity
 import com.example.fastfoodpos.data.room.Entity.OrderEntity
 
-@Database(entities = [CartItemEntity::class, FoodItemEntity::class, OrderEntity::class], version = 1, exportSchema = false)
+@Database(entities = [CartItemEntity::class, FoodItemEntity::class, OrderEntity::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class) // Correct usage
 abstract class AppDatabase : RoomDatabase() {
     abstract fun menuDao(): MenuDao
