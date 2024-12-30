@@ -22,4 +22,13 @@ interface MenuDao {
 
     @Query("SELECT * FROM food_items WHERE id = :itemId")
     fun getFoodItemById(itemId: Int): FoodItemEntity?
+
+    @Query("UPDATE food_items SET quantity = :newQuantity WHERE id = :itemId")
+    suspend fun updateFoodItemQuantity(itemId: Int, newQuantity: Int)
+
+    @Query("DELETE FROM cart_items")
+    suspend fun clearCart()
+
+    @Query("SELECT * FROM food_items WHERE name = :name")
+    suspend fun getFoodItemByName(name: String): FoodItemEntity
 }

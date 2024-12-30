@@ -125,5 +125,27 @@ class FastFoodRepositoryImpl @Inject constructor(
 
         }
     }
-
+    override suspend fun clearCart() {
+        withContext(Dispatchers.IO) {
+            menuDao.clearCart()
+        }
+    }
+    override suspend fun updateFoodItemQuantity(itemId: Int, newQuantity: Int) {
+        withContext(Dispatchers.IO) {
+            menuDao.updateFoodItemQuantity(itemId, newQuantity)
+        }
+    }
+    override suspend fun getFoodItemByName(name: String): FoodItem {
+        return withContext(Dispatchers.IO) {
+            menuDao.getFoodItemByName(name).let {
+                FoodItem(
+                    id = it.id,
+                    name = it.name,
+                    price = it.price,
+                    imageResource = it.imageResource,
+                    quantity = it.quantity
+                )
+            }
+        }
+    }
 }

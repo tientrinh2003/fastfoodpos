@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +43,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.fastfoodpos.R
 import com.example.fastfoodpos.domain.model.CartItem
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -103,10 +105,12 @@ fun CartScreen(
 @Composable
 fun CartItemCard(
     item: CartItem,
-    onIncreaseQuantity: (CartItem) -> Unit,
-    onDecreaseQuantity: (CartItem) -> Unit,
+    onIncreaseQuantity: suspend (CartItem) -> Unit,
+    onDecreaseQuantity: suspend (CartItem) -> Unit,
     onDelete: (CartItem) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -161,14 +165,18 @@ fun CartItemCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Decrease Button (Image with clickable modifier)
+                // Decrease Button
                 Image(
-                    painter = painterResource(id = R.drawable.icon_minus), // Replace with your drawable
+                    painter = painterResource(id = R.drawable.icon_minus),
                     contentDescription = "Decrease Quantity",
                     modifier = Modifier
                         .size(40.dp)
                         .padding(8.dp)
-                        .clickable { onDecreaseQuantity(item) } // Apply clickable modifier here
+                        .clickable {
+                            coroutineScope.launch {
+                                onDecreaseQuantity(item)
+                            }
+                        }
                 )
 
                 // Quantity
@@ -181,26 +189,30 @@ fun CartItemCard(
                     modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
-                // Increase Button (Image with clickable modifier)
+                // Increase Button
                 Image(
-                    painter = painterResource(id = R.drawable.icon_plus), // Replace with your drawable
+                    painter = painterResource(id = R.drawable.icon_plus),
                     contentDescription = "Increase Quantity",
                     modifier = Modifier
                         .size(40.dp)
                         .padding(8.dp)
-                        .clickable { onIncreaseQuantity(item) } // Apply clickable modifier here
+                        .clickable {
+                            coroutineScope.launch {
+                                onIncreaseQuantity(item)
+                            }
+                        }
                 )
             }
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            // Delete Button (Icon remains unchanged, but you can replace it with Image if needed)
+            // Delete Button
             IconButton(
                 onClick = { onDelete(item) },
                 modifier = Modifier.size(40.dp)
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.icon), // Replace with your drawable
+                    painter = painterResource(id = R.drawable.icon),
                     contentDescription = "Delete Item",
                     tint = MaterialTheme.colorScheme.onSurface
                 )

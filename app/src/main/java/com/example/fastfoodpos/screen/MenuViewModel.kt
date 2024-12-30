@@ -3,6 +3,7 @@ package com.example.fastfoodpos.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.fastfoodpos.R
+import com.example.fastfoodpos.domain.model.CartItem
 import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.domain.repository.FastFoodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,7 @@ class MenuViewModel @Inject constructor(
         fetchFoodItems()
     }
 
-    private fun fetchFoodItems() {
+    fun fetchFoodItems() {
         viewModelScope.launch {
             println("MenuViewModel: fetchFoodItems() called")
             fastFoodRepository.fetchFoodItems()
@@ -44,6 +45,7 @@ class MenuViewModel @Inject constructor(
             fastFoodRepository.insertFoodItem(foodItem)
         }
     }
+
     fun updateFoodItem(foodItem: FoodItem) {
         viewModelScope.launch {
             fastFoodRepository.updateFoodItem(foodItem)
@@ -105,6 +107,13 @@ class MenuViewModel @Inject constructor(
             } catch (e: Exception) {
                 println("MenuViewModel: Error inserting initial data: ${e.message}")
             }
+        }
+    }
+    fun addToCart(item: FoodItem, cartViewModel: com.example.fastfoodpos.screen.CartViewModel) {
+        viewModelScope.launch {
+            cartViewModel.addToCart(
+                CartItem(item.id, item.name, item.price, 1, item.imageResource)
+            )
         }
     }
 }

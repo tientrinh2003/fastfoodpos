@@ -12,4 +12,7 @@ interface FastFoodRepository {
     fun fetchOrdersFromLocal(): Flow<List<Order>>
     suspend fun getFoodItemById(itemId: Int): FoodItem?
     suspend fun updateFoodItem(foodItem: FoodItem)
+    suspend fun clearCart()
+    suspend fun updateFoodItemQuantity(itemId: Int, newQuantity: Int)
+    suspend fun getFoodItemByName(name: String): FoodItem
 }

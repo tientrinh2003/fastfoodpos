@@ -33,6 +33,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -45,16 +46,16 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.example.fastfoodpos.domain.model.CartItem
 import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.screen.CartViewModel
+import com.example.fastfoodpos.ui.FoodItemCard
 import com.example.fastfoodpos.viewmodel.MenuUiState
 import com.example.fastfoodpos.viewmodel.MenuViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(
-    viewModel: MenuViewModel = hiltViewModel(),
+    viewModel: MenuViewModel =hiltViewModel(),
     onCartClicked: () -> Unit,
     onLogout: () -> Unit,
     cartViewModel: CartViewModel = hiltViewModel()
@@ -175,7 +176,8 @@ fun MenuScreen(
                         bottom.linkTo(parent.bottom)
                         height = androidx.constraintlayout.compose.Dimension.fillToConstraints
                     },
-                    onItemClick = { item -> cartViewModel.addToCart(CartItem(item.id, item.name, item.price, 1, item.imageResource))
+                    onItemClick = { item ->
+                        viewModel.addToCart(item, cartViewModel)
                     }
                 )
             }
@@ -258,8 +260,14 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
             Text(text = "\$${item.price}", style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
-            Button(onClick = { onItemClick(item) }) {
-                Text("Add to Cart")
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center // Centers content within the Box
+            ) {
+                Button(onClick = { onItemClick(item) }) {
+                    Text("Add to Cart")
+                }
             }
         }
     }

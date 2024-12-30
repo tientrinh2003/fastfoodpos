@@ -38,7 +38,7 @@ class OrderViewModel @Inject constructor(private val fastFoodRepository: FastFoo
     }
 
     fun submitOrder() {
-        if (cartItems.isEmpty()) {
+        if (cartItems.isEmpty() || cartItems.any { it.quantity <= 0 }) {
             // Handle empty cart case (e.g., show a message)
             return
         }
@@ -46,6 +46,8 @@ class OrderViewModel @Inject constructor(private val fastFoodRepository: FastFoo
             try {
                 val order = createOrder()
                 fastFoodRepository.saveOrderToLocal(order)
+                fastFoodRepository.clearCart()
+
             } catch (e: Exception) {
                 // Handle database error (e.g., log the error)
                 e.printStackTrace()
@@ -53,14 +55,30 @@ class OrderViewModel @Inject constructor(private val fastFoodRepository: FastFoo
         }
     }
 
-    private fun createOrder(): Order {
+    private suspend fun createOrder(): Order {
         val currentDate = sdf.format(Date())
         val totalPrice = cartItems.sumOf { it.price * it.quantity }
         val formattedPrice = "%.2f".format(totalPrice).toDouble()
+
+        for (cartItem in cartItems) {
+            val foodItem = fastFoodRepository.getFoodItemByName(cartItem.name)
+            if (foodItem != null) {
+                updateFoodItemQuantity(foodItem.id, foodItem.quantity - cartItem.quantity)
+            } else {
+                // Handle the case where the food item is not found
+                println("Food item with name ${cartItem.name} not found")
+            }
+        }
+
         return Order(
             orderDate = currentDate,
             totalPrice = formattedPrice,
             items = cartItems
         )
+    }
+    private fun updateFoodItemQuantity(itemId: Int, newQuantity: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            fastFoodRepository.updateFoodItemQuantity(itemId, newQuantity)
+        }
     }
 }

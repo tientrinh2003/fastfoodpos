@@ -3,23 +3,35 @@ package com.example.fastfoodpos.screen
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -29,9 +41,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -53,16 +65,38 @@ fun EditItemScreen(
     viewModel: MenuViewModel = hiltViewModel()
 ) {
     val item = viewModel.getFoodItemById(itemId.toIntOrNull() ?: -1)
-    var name by remember { mutableStateOf(item?.name ?: "") }
-    var price by remember { mutableStateOf(item?.price?.toString() ?: "") }
-    var quantity by remember { mutableStateOf(item?.quantity?.toString() ?: "") }
+    val scrollState = rememberScrollState()
+
+    if (item == null) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                "Item not found",
+                style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(onClick = { navController.popBackStack() }) {
+                Text("Go Back")
+            }
+        }
+        return
+    }
+
+    // State variables for editing fields
+    var name by remember { mutableStateOf(item.name) }
+    var price by remember { mutableStateOf(item.price.toString()) }
+    var quantity by remember { mutableStateOf(item.quantity.toString()) }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
+    // Image picker
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imageUri = uri
-    }
+    ) { uri: Uri? -> imageUri = uri }
 
     Scaffold(
         topBar = {
@@ -70,7 +104,12 @@ fun EditItemScreen(
                 title = { Text("Edit Item") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = Color.White
-                )
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Filled.ArrowBack, "backIcon")
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -79,34 +118,69 @@ fun EditItemScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
             OutlinedTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Name") },
-                modifier = Modifier.fillMaxWidth()
+                label = { Text("Item Name") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                ),
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
             Spacer(modifier = Modifier.height(8.dp))
+
             OutlinedTextField(
                 value = price,
                 onValueChange = { price = it },
                 label = { Text("Price") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                ),
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface)
             )
             Spacer(modifier = Modifier.height(8.dp))
+
             OutlinedTextField(
                 value = quantity,
                 onValueChange = { quantity = it },
                 label = { Text("Quantity") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                    unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                ),
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface)
             )
+
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "Select Image",
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 16.dp)
                     .background(
                         color = MaterialTheme.colorScheme.surface,
                         shape = RoundedCornerShape(8.dp)
@@ -120,14 +194,14 @@ fun EditItemScreen(
                     fontSize = 16.sp
                 )
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Box(
+
+            // Display Selected Image
+            Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center
+                    .padding(top = 16.dp)
+                    .size(200.dp),
+                shape = RoundedCornerShape(8.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 if (imageUri != null) {
                     AsyncImage(
@@ -136,25 +210,22 @@ fun EditItemScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
-                } else if (item?.imageResource != null){
-                    AsyncImage(
-                        model = item?.imageResource,
-                        contentDescription = "Current Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
                 } else {
-                    AsyncImage(
-                        model = R.drawable._157846_200,
-                        contentDescription = "Default Image",
+                    Image(
+                        painter = painterResource(id = R.drawable._157846_200), // Placeholder image
+                        contentDescription = "Placeholder Image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             Button(
                 onClick = {
+                    // Add logic to update the item
+                    // Validate inputs and update item in the viewModel
                     if (name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()) {
                         val updatedItem = FoodItem(
                             id = itemId.toInt(),
@@ -164,12 +235,18 @@ fun EditItemScreen(
                             quantity = quantity.toIntOrNull() ?: 0
                         )
                         viewModel.updateFoodItem(updatedItem)
-                        navController.popBackStack()
+                        navController.navigate("viewMenuScreen")
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text("Update Item")
+                Text(
+                    text = "Update Item",
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    fontFamily = FontFamily.Cursive,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
