@@ -52,13 +52,13 @@ fun OrderHistoryScreen(
                     Text(
                         text = "Order History",
                         fontFamily = FontFamily.Cursive,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 24.sp,
-                        color = Color.Black
+                        fontSize = 30.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate("adminMenuScreen") }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",

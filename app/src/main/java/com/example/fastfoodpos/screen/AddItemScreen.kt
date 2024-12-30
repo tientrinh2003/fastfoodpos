@@ -220,6 +220,10 @@ fun AddItemScreen(onNavigateBack: () -> Unit, viewModel: AddItemViewModel = hilt
                         itemPriceError = "Invalid price format"
                         isValid = false
                     }
+                    if (price != null && price <= 0) {
+                        itemPriceError = "Price must be greater than zero"
+                        isValid = false
+                    }
                 }
                 if (isValid) {
                     val price = itemPrice.toDouble()

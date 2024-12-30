@@ -90,146 +90,155 @@ fun CheckoutScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
+                .padding(paddingValues),
+            horizontalAlignment = Alignment.Start,
         ) {
+            item {
+                // Title
+                Text(
+                    text = "Checkout",
+                    style = MaterialTheme.typography.displayLarge,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
             // Cart Items List
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(cartItems) { item ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(text = "${item.name} x ${item.quantity}", style = MaterialTheme.typography.bodyLarge)
-                        Text(text = "\$${item.price * item.quantity}", style = MaterialTheme.typography.bodyLarge)
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Total Price
-            val totalPrice = cartItems.sumOf { it.price * it.quantity }
-            val formattedPrice = BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP) // Convert to BigDecimal with scale
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Total:",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 34.sp
-                )
-                Text(
-                    text = "\$${formattedPrice}",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.Red,
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 30.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Payment Options
-            paymentOptions.forEach { option ->
+            items(cartItems) { item ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(
-                            if (selectedOption == option) Color(0xFFE0E0E0) else Color.Transparent
-                        )
-                        .selectable(
-                            selected = (selectedOption == option),
-                            onClick = { selectedOption = option }
-                        )
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    RadioButton(
-                        selected = selectedOption == option,
-                        onClick = { selectedOption = option },
-                        modifier = Modifier.padding(end = 16.dp)
-                    )
-                    when (option) {
-                        "Credit card" -> {
-                            Image(
-                                painter = painterResource(id = R.drawable.pngwing_28),
-                                contentDescription = "MasterCard",
-                                modifier = Modifier.size(40.dp)
-                            )
-                            PaymentOptionDetails(
-                                title = "Credit card",
-                                subtitle = "5105 **** **** 0505",
-                                textColor = Color.Black,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-
-                        "Debit card" -> {
-                            Image(
-                                painter = painterResource(id = R.drawable.pngwing_27__1_),
-                                contentDescription = "Visa",
-                                modifier = Modifier.size(40.dp)
-                            )
-                            PaymentOptionDetails(
-                                title = "Debit card",
-                                subtitle = "3566 **** **** 0505",
-                                textColor = Color.Black,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-
-                        "E-Wallet" -> {
-                            Image(
-                                painter = painterResource(id = R.drawable.pngwing_27),
-                                contentDescription = "MOMO",
-                                modifier = Modifier.size(40.dp)
-                            )
-                            PaymentOptionDetails(
-                                title = "E-Wallet",
-                                subtitle = "038972***",
-                                textColor = Color.Black,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-                    }
+                    Text(text = "${item.name} x ${item.quantity}", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "\$${item.price * item.quantity}", style = MaterialTheme.typography.bodyLarge)
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Pay Now Button
-            Button(
-                onClick = {
-                    viewModel.submitOrder()
-                    onPaymentSuccess()
-                          },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE91E63),
-                    contentColor = Color.White
-                )
-            ) {
-                Text(
-                    text = "Pay Now",
-                    fontFamily = FontFamily.Cursive,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 20.sp
-                )
+                // Total Price
+                val totalPrice = cartItems.sumOf { it.price * it.quantity }
+                val formattedPrice = BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Total:",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontFamily = FontFamily.Cursive,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 34.sp
+                    )
+                    Text(
+                        text = "\$${formattedPrice}",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.Red,
+                        fontFamily = FontFamily.Cursive,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 30.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Payment Options
+                paymentOptions.forEach { option ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                if (selectedOption == option) Color(0xFFE0E0E0) else Color.Transparent
+                            )
+                            .selectable(
+                                selected = (selectedOption == option),
+                                onClick = { selectedOption = option }
+                            )
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = selectedOption == option,
+                            onClick = { selectedOption = option },
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                        when (option) {
+                            "Credit card" -> {
+                                Image(
+                                    painter = painterResource(id = R.drawable.pngwing_28),
+                                    contentDescription = "MasterCard",
+                                    modifier = Modifier.size(40.dp)
+                                )
+                                PaymentOptionDetails(
+                                    title = "Credit card",
+                                    subtitle = "5105 **** **** 0505",
+                                    textColor = Color.Black,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            }
+
+                            "Debit card" -> {
+                                Image(
+                                    painter = painterResource(id = R.drawable.pngwing_27__1_),
+                                    contentDescription = "Visa",
+                                    modifier = Modifier.size(40.dp)
+                                )
+                                PaymentOptionDetails(
+                                    title = "Debit card",
+                                    subtitle = "3566 **** **** 0505",
+                                    textColor = Color.Black,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            }
+
+                            "E-Wallet" -> {
+                                Image(
+                                    painter = painterResource(id = R.drawable.pngwing_27),
+                                    contentDescription = "MOMO",
+                                    modifier = Modifier.size(40.dp)
+                                )
+                                PaymentOptionDetails(
+                                    title = "E-Wallet",
+                                    subtitle = "038972***",
+                                    textColor = Color.Black,
+                                    modifier = Modifier.padding(start = 16.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Pay Now Button
+                Button(
+                    onClick = {
+                        viewModel.submitOrder()
+                        onPaymentSuccess()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFE91E63),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(
+                        text = "Pay Now",
+                        fontFamily = FontFamily.Cursive,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp
+                    )
+                }
             }
         }
     }

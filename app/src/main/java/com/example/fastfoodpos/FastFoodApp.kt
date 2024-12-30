@@ -31,7 +31,7 @@ fun FastFoodApp() {
         composable("login") {
             LoginScreen(navController = navController, onLoginSuccess = { userType ->
                 if (userType == UserType.ADMIN) {
-                    navController.navigate("adminMenu")
+                    navController.navigate("adminMenuScreen")
                 } else {
                     navController.navigate("menu")
                 }
@@ -49,7 +49,7 @@ fun FastFoodApp() {
         }
 
         // Admin Menu Screen
-        composable("adminMenu") {
+        composable("adminMenuScreen") {
             AdminMenuScreen(
                 navController = navController,
                 onLogout = {
@@ -61,7 +61,7 @@ fun FastFoodApp() {
         // Add Item Screen
         composable("addItemScreen") {
             AddItemScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.navigate("adminMenuScreen") }
             )
         }
 

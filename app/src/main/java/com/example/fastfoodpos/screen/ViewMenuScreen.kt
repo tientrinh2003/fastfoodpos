@@ -34,7 +34,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -49,9 +52,14 @@ fun ViewMenuScreen(navController: NavController, viewModel: MenuViewModel = hilt
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Menu Items") },
+                title = { Text(
+                    text = "Menu Items",
+                    fontFamily = FontFamily.Cursive,
+                    fontSize = 30.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigate("adminMenuScreen") }) {
                         Icon(Icons.Filled.ArrowBack, "Back", tint = Color.Black)
                     }
                 },

@@ -48,7 +48,8 @@ fun AdminMenuScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState) // Make the content scrollable
-            .background(Color.Red) // Background color
+            .background(Color.Red), // Background color
+        horizontalAlignment = Alignment.CenterHorizontally // Align items horizontally to center
     ) {
         // Title Text
         Text(
@@ -57,10 +58,9 @@ fun AdminMenuScreen(
             color = Color.White,
             fontSize = 60.sp,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 40.dp)
-                .align(Alignment.CenterHorizontally)
+                .padding(top = 40.dp) // Space at the top
         )
+
 
         // Summary Card
         Card(
@@ -169,7 +169,7 @@ fun AdminSummaryCardContent(completedOrders: Int, totalEarnings: Double) {
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             SummaryColumn(title = "Completed Order", value = completedOrders.toString(), color = Color.Black)
-            SummaryColumn(title = "Earning", value = "${"%.2f".format(totalEarnings)} $", color = Color.Green)
+            SummaryColumn(title = "Earning", value = "${"%.2f".format(totalEarnings)} $", color = Color.Black)
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -192,6 +192,6 @@ fun SummaryColumn(title: String, value: String, color: Color) {
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = color
-            )
+        )
     }
 }

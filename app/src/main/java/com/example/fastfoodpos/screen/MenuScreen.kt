@@ -220,6 +220,7 @@ fun FoodList(
         menuItems.filter { it.name.contains(searchQuery, ignoreCase = true) }
     }
 
+
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
         contentPadding = PaddingValues(8.dp),

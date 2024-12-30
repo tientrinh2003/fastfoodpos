@@ -3,7 +3,6 @@ package com.example.fastfoodpos.screen
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +42,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -53,7 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.fastfoodpos.R
 import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.viewmodel.MenuViewModel
 
@@ -66,6 +63,7 @@ fun EditItemScreen(
 ) {
     val item = viewModel.getFoodItemById(itemId.toIntOrNull() ?: -1)
     val scrollState = rememberScrollState()
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     if (item == null) {
         Column(
@@ -101,7 +99,13 @@ fun EditItemScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Edit Item") },
+                title = {
+                    Text("Edit Item",
+                    fontFamily = FontFamily.Cursive,
+                    fontSize = 30.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                ) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = Color.White
                 ),
@@ -211,9 +215,9 @@ fun EditItemScreen(
                         contentScale = ContentScale.Crop
                     )
                 } else {
-                    Image(
-                        painter = painterResource(id = R.drawable._157846_200), // Placeholder image
-                        contentDescription = "Placeholder Image",
+                    AsyncImage(
+                        model = item.imageResource,
+                        contentDescription = "Selected Image",
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -226,7 +230,14 @@ fun EditItemScreen(
                 onClick = {
                     // Add logic to update the item
                     // Validate inputs and update item in the viewModel
-                    if (name.isNotBlank() && price.isNotBlank() && quantity.isNotBlank()) {
+                    if (name.isBlank() && price.isBlank() && quantity.isBlank())
+                    {
+                        errorMessage = "Please fill in all fields"
+                    }else if(price.toInt() < 0){
+                        errorMessage = "Price cannot be negative"
+                    } else{
+//                            (name.isNotBlank() && price.isNotBlank() && price.toInt() > 0 && quantity.isNotBlank())
+                        errorMessage = null
                         val updatedItem = FoodItem(
                             id = itemId.toInt(),
                             name = name,
@@ -247,7 +258,16 @@ fun EditItemScreen(
                     fontFamily = FontFamily.Cursive,
                     fontWeight = FontWeight.Bold
                 )
+                }
+            Spacer(modifier = Modifier.height(16.dp))
+            if (errorMessage != null) {
+                Text(
+                    text = errorMessage!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
             }
         }
     }
-}
+

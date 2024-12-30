@@ -36,19 +36,27 @@ class CartViewModel @Inject constructor(
         val availableQuantity = withContext(Dispatchers.IO) {
             fastFoodRepository.getFoodItemByName(item.name)?.quantity ?: 0
         }
-        if (availableQuantity > 0) {
+        if (availableQuantity > 0 && availableQuantity >= item.quantity) {
             viewModelScope.launch(Dispatchers.IO) {
                 val existingItem = _cartState.value.find { it.id == item.id }
                 if (existingItem != null) {
                     val updatedItem = existingItem.copy(quantity = existingItem.quantity + 1)
                     cartRepository.updateCartItem(updatedItem)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(getApplication(), "You added Food Item: ${item.name}", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     cartRepository.insertCartItem(item.copy(quantity = 1))
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(getApplication(), "You added Food Item: ${item.name}", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         } else {
             // Show a Toast message to the user
-            Toast.makeText(getApplication(), "Food item with name ${item.name} is not available in stock", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(getApplication(), "Food item with name ${item.name} is not available in stock", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -63,7 +71,9 @@ class CartViewModel @Inject constructor(
             }
         } else {
             // Show a Toast message to the user
-            Toast.makeText(getApplication(), "Not enough stock for ${item.name}", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(getApplication(), "Not enough stock for ${item.name}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
