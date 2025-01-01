@@ -1,21 +1,26 @@
 package com.example.fastfoodpos.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,11 +65,11 @@ fun ViewMenuScreen(navController: NavController, viewModel: MenuViewModel = hilt
                     fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigate("adminMenuScreen") }) {
-                        Icon(Icons.Filled.ArrowBack, "Back", tint = Color.Black)
+                        Icon(Icons.Filled.ArrowBack, "Back", tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         }
@@ -82,10 +87,16 @@ fun ViewMenuScreen(navController: NavController, viewModel: MenuViewModel = hilt
                 val foodItems = (uiState as MenuUiState.Success).foodItems
                 FoodItemList(
                     foodItems = foodItems,
-                    modifier = Modifier.padding(paddingValues)
-                ) { foodItem ->
-                    navController.navigate("editItemScreen/${foodItem.id}")
-                }
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    onItemClick = { foodItem ->
+                        navController.navigate("editItemScreen/${foodItem.id}")
+                    },
+                    onDelete = { foodItem ->
+                        viewModel.deleteFoodItem(foodItem)
+                    }
+                )
             }
             is MenuUiState.Error -> {
                 Text(
@@ -107,7 +118,8 @@ fun ViewMenuScreen(navController: NavController, viewModel: MenuViewModel = hilt
 fun FoodItemList(
     foodItems: List<FoodItem>,
     modifier: Modifier = Modifier,
-    onItemClick: (FoodItem) -> Unit
+    onItemClick: (FoodItem) -> Unit,
+    onDelete: (FoodItem) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
@@ -115,33 +127,34 @@ fun FoodItemList(
         modifier = modifier.fillMaxSize()
     ) {
         items(foodItems) { item ->
-            FoodItemCard(item = item, onItemClick = onItemClick)
+            FoodItemCard(item = item, onItemClick = onItemClick, onDelete = onDelete)
         }
     }
 }
 
 @Composable
-fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
+fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit, onDelete: (FoodItem) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
-            .clickable { onItemClick(item) },
+            .border(1.dp, Color.Gray),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            androidx.compose.foundation.layout.Box(
+        Column(
+            modifier = Modifier.padding(8.dp),
+        ) {
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(1f) // Ensures a square aspect ratio
+                    .aspectRatio(1f)
                     .clip(RoundedCornerShape(8.dp))
                     .background(MaterialTheme.colorScheme.surfaceVariant)
             ) {
                 AsyncImage(
                     model = item.imageResource,
                     contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize(), // Matches the parent Box size
+                    modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
                     placeholder = painterResource(id = R.drawable._157846_200)
                 )
@@ -150,7 +163,30 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
             Text(text = item.name, style = MaterialTheme.typography.titleMedium)
             Text(text = "\$${item.price}", style = MaterialTheme.typography.bodyMedium)
             Text(text = "Quantity: ${item.quantity}", style = MaterialTheme.typography.bodyMedium)
-
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = { onItemClick(item) },
+                    modifier = Modifier
+                ) {
+                    Text("Edit Item")
+                }
+                IconButton(
+                    onClick = { onDelete(item) },
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.icon),
+                        contentDescription = "Delete Item",
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
     }
 }

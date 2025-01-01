@@ -31,4 +31,8 @@ interface MenuDao {
 
     @Query("SELECT * FROM food_items WHERE name = :name")
     suspend fun getFoodItemByName(name: String): FoodItemEntity
+
+    @Query("DELETE FROM food_items WHERE id = :itemId")
+    suspend fun deleteFoodItem(itemId: Int)
+
 }

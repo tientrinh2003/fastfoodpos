@@ -75,7 +75,6 @@ fun AddItemScreen(onNavigateBack: () -> Unit, viewModel: AddItemViewModel = hilt
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-            .padding(16.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
@@ -84,6 +83,7 @@ fun AddItemScreen(onNavigateBack: () -> Unit, viewModel: AddItemViewModel = hilt
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.background)
                 .padding(bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

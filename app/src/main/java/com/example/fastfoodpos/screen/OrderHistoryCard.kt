@@ -1,7 +1,7 @@
 package com.example.fastfoodpos.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -62,13 +61,13 @@ fun OrderHistoryScreen(
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back",
-                            tint = Color.Black,
+                            tint = MaterialTheme.colorScheme.onSurface,
                             modifier = Modifier.size(30.dp)
                         )
                     }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         }
@@ -78,10 +77,10 @@ fun OrderHistoryScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(vertical = 8.dp)
             ) {
                 items(orders.value) { order ->
                     OrderItemCard(order = order)
@@ -114,6 +113,7 @@ fun OrderItemCard(order: Order) {
     androidx.compose.material3.Card(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
             .padding(vertical = 8.dp),
         shape = androidx.compose.foundation.shape.RoundedCornerShape(10.dp),
         elevation = androidx.compose.material3.CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -129,6 +129,7 @@ fun OrderItemCard(order: Order) {
                 Text(
                     text = "Order Date:",
                     style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
@@ -136,6 +137,7 @@ fun OrderItemCard(order: Order) {
                 Text(
                     text = formattedDate,
                     style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Normal
                 )
@@ -150,12 +152,14 @@ fun OrderItemCard(order: Order) {
                     style = MaterialTheme.typography.titleMedium,
                     fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.weight(1f)
                 )
                 Text(
                     text = "\$${order.totalPrice}",
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = FontFamily.Serif,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Normal
                 )
             }
@@ -164,6 +168,7 @@ fun OrderItemCard(order: Order) {
                 text = "Items:",
                 style = MaterialTheme.typography.titleMedium,
                 fontFamily = FontFamily.Serif,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontWeight = FontWeight.Bold
             )
             order.items.forEach { item ->
@@ -171,6 +176,7 @@ fun OrderItemCard(order: Order) {
                     text = "- ${item.name} x ${item.quantity}",
                     style = MaterialTheme.typography.bodyLarge,
                     fontFamily = FontFamily.Serif,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.Normal
                 )
             }

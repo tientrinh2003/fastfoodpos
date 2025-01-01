@@ -38,6 +38,13 @@ class MenuViewModel @Inject constructor(
                     println("MenuViewModel: Food items fetched successfully: $items")
                 }
         }
+        insertInitialData()
+    }
+
+    fun deleteFoodItem(foodItem: FoodItem) {
+        viewModelScope.launch {
+            fastFoodRepository.deleteFoodItem(itemId = foodItem.id)
+        }
     }
 
     fun addFoodItem(foodItem: FoodItem) {

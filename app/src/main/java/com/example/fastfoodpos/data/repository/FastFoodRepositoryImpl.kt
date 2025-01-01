@@ -148,4 +148,9 @@ class FastFoodRepositoryImpl @Inject constructor(
             }
         }
     }
+    override suspend fun deleteFoodItem(itemId: Int) {
+        withContext(Dispatchers.IO) {
+            menuDao.deleteFoodItem(itemId)
+        }
+    }
 }

@@ -15,4 +15,5 @@ interface FastFoodRepository {
     suspend fun clearCart()
     suspend fun updateFoodItemQuantity(itemId: Int, newQuantity: Int)
     suspend fun getFoodItemByName(name: String): FoodItem
+    suspend fun deleteFoodItem(itemId: Int)
 }

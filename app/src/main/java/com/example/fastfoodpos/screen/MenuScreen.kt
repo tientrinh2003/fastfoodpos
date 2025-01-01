@@ -1,6 +1,7 @@
 package com.example.fastfoodpos
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -48,14 +49,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.fastfoodpos.domain.model.FoodItem
 import com.example.fastfoodpos.screen.CartViewModel
-import com.example.fastfoodpos.ui.FoodItemCard
 import com.example.fastfoodpos.viewmodel.MenuUiState
 import com.example.fastfoodpos.viewmodel.MenuViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(
-    viewModel: MenuViewModel =hiltViewModel(),
+    viewModel: MenuViewModel = hiltViewModel(),
     onCartClicked: () -> Unit,
     onLogout: () -> Unit,
     cartViewModel: CartViewModel = hiltViewModel()
@@ -63,20 +63,24 @@ fun MenuScreen(
     val uiState by viewModel.foodItems.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    ConstraintLayout(modifier = Modifier.fillMaxSize()) {
+    ConstraintLayout(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
         val (foodList, titleText, subtitleText, cartButton, searchBar, logoutButton) = createRefs()
 
         Text(
             text = "POSVN",
             fontFamily = FontFamily.Cursive,
-            color = Color.Red,
+            color = MaterialTheme.colorScheme.inversePrimary,
             fontSize = 45.sp,
-            modifier = Modifier
-                .constrainAs(titleText) {
-                    top.linkTo(parent.top)
-                    start.linkTo(parent.start, margin = 10.dp)
-                }
+            modifier = Modifier.constrainAs(titleText) {
+                top.linkTo(parent.top)
+                start.linkTo(parent.start, margin = 10.dp)
+            }
         )
+
         IconButton(
             onClick = onLogout,
             modifier = Modifier
@@ -99,13 +103,12 @@ fun MenuScreen(
             text = "ORDER YOUR FAVOURITE FOOD!",
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Medium,
-            color = Color.Gray,
+            color = MaterialTheme.colorScheme.onSurface,
             fontSize = 18.sp,
-            modifier = Modifier
-                .constrainAs(subtitleText) {
-                    top.linkTo(titleText.bottom)
-                    start.linkTo(titleText.start)
-                }
+            modifier = Modifier.constrainAs(subtitleText) {
+                top.linkTo(titleText.bottom)
+                start.linkTo(titleText.start)
+            }
         )
 
         IconButton(
@@ -152,7 +155,6 @@ fun MenuScreen(
             )
         )
 
-        // Handle UI states
         when (uiState) {
             is MenuUiState.Loading -> {
                 Text(
@@ -220,10 +222,9 @@ fun FoodList(
         menuItems.filter { it.name.contains(searchQuery, ignoreCase = true) }
     }
 
-
     LazyVerticalGrid(
         columns = GridCells.Adaptive(150.dp),
-        contentPadding = PaddingValues(8.dp),
+        contentPadding = PaddingValues(16.dp),
         modifier = modifier
     ) {
         items(filteredItems) { item ->
@@ -237,10 +238,13 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .border(1.dp, Color.Gray),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -259,16 +263,14 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = item.name, style = MaterialTheme.typography.titleMedium)
             Text(text = "\$${item.price}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Quantity: ${item.quantity}", style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(8.dp))
-
-            Box(
+            Button(
+                onClick = { onItemClick(item) },
                 modifier = Modifier
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center // Centers content within the Box
+                    .align(Alignment.CenterHorizontally) // Centering the button horizontally
             ) {
-                Button(onClick = { onItemClick(item) }) {
-                    Text("Add to Cart")
-                }
+                Text("Add to Cart")
             }
         }
     }

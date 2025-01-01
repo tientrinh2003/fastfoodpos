@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -48,7 +49,7 @@ fun AdminMenuScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState) // Make the content scrollable
-            .background(Color.Red), // Background color
+            .background(MaterialTheme.colorScheme.error), // Background color
         horizontalAlignment = Alignment.CenterHorizontally // Align items horizontally to center
     ) {
         // Title Text
@@ -168,8 +169,8 @@ fun AdminSummaryCardContent(completedOrders: Int, totalEarnings: Double) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            SummaryColumn(title = "Completed Order", value = completedOrders.toString(), color = Color.Black)
-            SummaryColumn(title = "Earning", value = "${"%.2f".format(totalEarnings)} $", color = Color.Black)
+            SummaryColumn(title = "Completed Order", value = completedOrders.toString(), color = MaterialTheme.colorScheme.surface)
+            SummaryColumn(title = "Earning", value = "${"%.2f".format(totalEarnings)} $", color = MaterialTheme.colorScheme.surface)
         }
         Spacer(modifier = Modifier.height(16.dp))
     }
@@ -191,7 +192,6 @@ fun SummaryColumn(title: String, value: String, color: Color) {
             text = value,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = color
         )
     }
 }

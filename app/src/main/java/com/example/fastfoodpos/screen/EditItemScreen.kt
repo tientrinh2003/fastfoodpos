@@ -40,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -78,7 +77,7 @@ fun EditItemScreen(
                 style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold)
             )
             Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { navController.popBackStack() }) {
+            Button(onClick = { navController.navigate("viewMenuScreen") }) {
                 Text("Go Back")
             }
         }
@@ -107,7 +106,7 @@ fun EditItemScreen(
                     fontWeight = FontWeight.Bold
                 ) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.background
                 ),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
@@ -229,13 +228,15 @@ fun EditItemScreen(
             Button(
                 onClick = {
                     // Add logic to update the item
-                    // Validate inputs and update item in the viewModel
-                    if (name.isBlank() && price.isBlank() && quantity.isBlank())
-                    {
-                        errorMessage = "Please fill in all fields"
-                    }else if(price.toInt() < 0){
-                        errorMessage = "Price cannot be negative"
-                    } else{
+                        // Add logic to update the item
+                        // Validate inputs and update item in the viewModel
+                        if (name.isBlank() || price.isBlank() || quantity.isBlank()) {
+                            errorMessage = "Please fill in all fields"
+                        } else if (price.toDoubleOrNull() == null || price.toDouble() < 0) {
+                            errorMessage = "Price must be a valid non-negative number"
+                        } else if (quantity.toIntOrNull() == null || quantity.toInt() < 0) {
+                            errorMessage = "Quantity must be a valid non-negative integer"
+                        } else {
 //                            (name.isNotBlank() && price.isNotBlank() && price.toInt() > 0 && quantity.isNotBlank())
                         errorMessage = null
                         val updatedItem = FoodItem(
