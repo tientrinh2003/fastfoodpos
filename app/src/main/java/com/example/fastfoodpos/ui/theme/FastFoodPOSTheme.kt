@@ -10,7 +10,6 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
-import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
@@ -20,14 +19,16 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    background = Gray,
+    background = DarkGray,
     surface = DarkGray,
     onPrimary = White,
     onSecondary = White,
     onTertiary = White,
     onBackground = White,
     onSurface = White,
-    inversePrimary = Pink40
+    inversePrimary = Pink40,
+    scrim = White
+
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -41,7 +42,8 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = Black,
     onBackground = Black,
     onSurface = Black,
-    inversePrimary = Color.Red
+    inversePrimary = Color.Red,
+    scrim = Black
 )
 
 @Composable

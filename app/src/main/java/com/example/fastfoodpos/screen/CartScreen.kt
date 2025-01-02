@@ -29,6 +29,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,10 +56,21 @@ fun CartScreen(
     viewModel: CartViewModel = hiltViewModel(),
     onCheckoutClicked: () -> Unit
 ) {
+    // Use a MutableState for the error message
+    val errorMessage = remember { mutableStateOf<String?>(null) }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Shopping Cart") },
+                title = {
+                    Text(
+                        "Shopping Cart",
+                        fontFamily = FontFamily.Cursive,
+                        fontSize = 30.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Filled.ArrowBack, "Back", tint = MaterialTheme.colorScheme.onSurface)
@@ -78,7 +92,7 @@ fun CartScreen(
         ) {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(vertical = 8.dp)
+                contentPadding = PaddingValues(8.dp)
             ) {
                 items(cartItems.value) { item ->
                     CartItemCard(
@@ -90,17 +104,36 @@ fun CartScreen(
                 }
             }
 
+            if (errorMessage.value != null) {
+                Text(
+                    text = errorMessage.value!!,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(16.dp)
+                )
+            }
+
             Button(
-                onClick = onCheckoutClicked,
+                onClick = {
+                    if (cartItems.value.isNotEmpty()) {
+                        errorMessage.value = null
+                        onCheckoutClicked()
+                    } else {
+                        errorMessage.value = "Cart is empty"
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(16.dp)
             ) {
-                Text(text = "Proceed to Checkout")
+                Text(
+                    text = "Proceed to Checkout",
+                    color = MaterialTheme.colorScheme.background
+                )
             }
         }
     }
 }
+
 
 @Composable
 fun CartItemCard(

@@ -243,7 +243,7 @@ fun AddItemScreen(onNavigateBack: () -> Unit, viewModel: AddItemViewModel = hilt
         ) {
             Text(
                 text = "Add Item",
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.surfaceVariant,
                 fontFamily = FontFamily.Cursive,
                 fontWeight = FontWeight.Bold
             )

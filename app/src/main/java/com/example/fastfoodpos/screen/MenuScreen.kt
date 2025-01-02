@@ -1,7 +1,6 @@
 package com.example.fastfoodpos
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -238,8 +237,7 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth()
-            .border(1.dp, Color.Gray),
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -270,7 +268,9 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit) {
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally) // Centering the button horizontally
             ) {
-                Text("Add to Cart")
+                Text("Add to Cart",
+                color = MaterialTheme.colorScheme.surfaceVariant
+                )
             }
         }
     }

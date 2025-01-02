@@ -192,7 +192,7 @@ fun SignUpScreen(navController: NavController,viewModel: SignUpViewModel = hiltV
             } else {
                 Text(
                     text = "SIGN UP",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     fontFamily = FontFamily.Cursive,
                     fontWeight = FontWeight.Bold
                 )

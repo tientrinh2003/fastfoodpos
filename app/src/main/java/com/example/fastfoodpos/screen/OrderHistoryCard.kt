@@ -77,7 +77,7 @@ fun OrderHistoryScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(MaterialTheme.colorScheme.background)
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

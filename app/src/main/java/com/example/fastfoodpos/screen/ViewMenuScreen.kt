@@ -1,7 +1,6 @@
 package com.example.fastfoodpos.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,7 +35,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -89,7 +87,7 @@ fun ViewMenuScreen(navController: NavController, viewModel: MenuViewModel = hilt
                     foodItems = foodItems,
                     modifier = Modifier
                         .padding(paddingValues)
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                        .background(MaterialTheme.colorScheme.background),
                     onItemClick = { foodItem ->
                         navController.navigate("editItemScreen/${foodItem.id}")
                     },
@@ -122,7 +120,7 @@ fun FoodItemList(
     onDelete: (FoodItem) -> Unit
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(150.dp),
+        columns = GridCells.Adaptive(160.dp),
         contentPadding = PaddingValues(8.dp),
         modifier = modifier.fillMaxSize()
     ) {
@@ -137,8 +135,7 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit, onDelete: (Foo
     Card(
         modifier = Modifier
             .padding(8.dp)
-            .fillMaxWidth()
-            .border(1.dp, Color.Gray),
+            .fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -168,13 +165,14 @@ fun FoodItemCard(item: FoodItem, onItemClick: (FoodItem) -> Unit, onDelete: (Foo
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.SpaceBetween // Changed to SpaceBetween
             ) {
                 Button(
                     onClick = { onItemClick(item) },
                     modifier = Modifier
                 ) {
-                    Text("Edit Item")
+                    Text("Edit Item",
+                        color = MaterialTheme.colorScheme.surfaceVariant)
                 }
                 IconButton(
                     onClick = { onDelete(item) },

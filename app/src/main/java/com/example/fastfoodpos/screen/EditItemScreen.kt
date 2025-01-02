@@ -255,7 +255,7 @@ fun EditItemScreen(
             ) {
                 Text(
                     text = "Update Item",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     fontFamily = FontFamily.Cursive,
                     fontWeight = FontWeight.Bold
                 )

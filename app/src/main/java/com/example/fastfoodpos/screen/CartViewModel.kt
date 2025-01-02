@@ -36,29 +36,49 @@ class CartViewModel @Inject constructor(
         val availableQuantity = withContext(Dispatchers.IO) {
             fastFoodRepository.getFoodItemByName(item.name)?.quantity ?: 0
         }
-        if (availableQuantity > 0 && availableQuantity >= item.quantity) {
+
+        // Calculate the total quantity already in the cart
+        val existingItemQuantity = withContext(Dispatchers.IO) {
+            _cartState.value.find { it.id == item.id }?.quantity ?: 0
+        }
+
+        // Check if the addition will exceed stock
+        if (availableQuantity > 0 && existingItemQuantity + 1 <= availableQuantity) {
             viewModelScope.launch(Dispatchers.IO) {
                 val existingItem = _cartState.value.find { it.id == item.id }
                 if (existingItem != null) {
                     val updatedItem = existingItem.copy(quantity = existingItem.quantity + 1)
                     cartRepository.updateCartItem(updatedItem)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(getApplication(), "You added Food Item: ${item.name}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            getApplication(),
+                            "You added Food Item: ${item.name}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
                     cartRepository.insertCartItem(item.copy(quantity = 1))
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(getApplication(), "You added Food Item: ${item.name}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            getApplication(),
+                            "You added Food Item: ${item.name}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             }
         } else {
             // Show a Toast message to the user
             withContext(Dispatchers.Main) {
-                Toast.makeText(getApplication(), "Food item with name ${item.name} is not available in stock", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    getApplication(),
+                    "Not enough stock for Food Item: ${item.name}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
+
 
     suspend fun increaseQuantity(item: CartItem) {
         val availableQuantity = withContext(Dispatchers.IO) {

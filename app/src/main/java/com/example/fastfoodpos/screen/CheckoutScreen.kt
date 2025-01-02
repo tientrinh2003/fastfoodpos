@@ -67,11 +67,11 @@ fun CheckoutScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Checkout",
+                        text = "Menu Items",
                         fontFamily = FontFamily.Cursive,
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 24.sp,
-                        color = MaterialTheme.colorScheme.onSurface
+                        fontSize = 30.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
@@ -181,7 +181,7 @@ fun CheckoutScreen(
                                 PaymentOptionDetails(
                                     title = "Credit card",
                                     subtitle = "5105 **** **** 0505",
-                                    textColor = Color.Black,
+                                    textColor = MaterialTheme.colorScheme.scrim,
                                     modifier = Modifier.padding(start = 16.dp)
                                 )
                             }
@@ -195,7 +195,7 @@ fun CheckoutScreen(
                                 PaymentOptionDetails(
                                     title = "Debit card",
                                     subtitle = "3566 **** **** 0505",
-                                    textColor = Color.Black,
+                                    textColor = MaterialTheme.colorScheme.scrim,
                                     modifier = Modifier.padding(start = 16.dp)
                                 )
                             }
@@ -209,7 +209,7 @@ fun CheckoutScreen(
                                 PaymentOptionDetails(
                                     title = "E-Wallet",
                                     subtitle = "038972***",
-                                    textColor = Color.Black,
+                                    textColor = MaterialTheme.colorScheme.scrim,
                                     modifier = Modifier.padding(start = 16.dp)
                                 )
                             }
@@ -227,7 +227,7 @@ fun CheckoutScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
+                        .padding(16.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFE91E63),
                         contentColor = Color.White

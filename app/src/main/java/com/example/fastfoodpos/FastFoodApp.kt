@@ -16,6 +16,7 @@ import com.example.fastfoodpos.screen.EditItemScreen
 import com.example.fastfoodpos.screen.LoginScreen
 import com.example.fastfoodpos.screen.OrderHistoryScreen
 import com.example.fastfoodpos.screen.OrderViewModel
+import com.example.fastfoodpos.screen.QrScreen
 import com.example.fastfoodpos.screen.SuccessScreen
 import com.example.fastfoodpos.ui.AdminMenuScreen
 import com.example.fastfoodpos.ui.UserType
@@ -98,7 +99,7 @@ fun FastFoodApp() {
             }
 
             CheckoutScreen(cartItems = cartItems, navController = navController) {
-                navController.navigate("success")
+                navController.navigate("qrScreen")
             }
         }
 
@@ -120,6 +121,11 @@ fun FastFoodApp() {
             SignUpScreen(
                 navController = navController
             )
+        }
+        composable("qrScreen") {
+            QrScreen(onNavigateToMenu = {
+                navController.navigate("success")
+            })
         }
     }
 }

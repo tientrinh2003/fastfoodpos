@@ -1,6 +1,7 @@
 package com.example.fastfoodpos.screen
 
 import PasswordVisibilityToggle
+import RoleRadioButton
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -70,7 +71,7 @@ fun LoginScreen(navController: NavController, onLoginSuccess: (UserType) -> Unit
             Log.d("LoginScreen", "LaunchedEffect: after delay")
             isLoading = false
             Log.d("LoginScreen", "LaunchedEffect: before onLoginSuccess")
-            val user = viewModel.login(email, password)
+            val user = viewModel.login(email, password, selectedRole)
             if (user != null) {
                 onLoginSuccess(selectedRole)
             } else {
@@ -216,7 +217,7 @@ fun LoginScreen(navController: NavController, onLoginSuccess: (UserType) -> Unit
                 } else {
                     Text(
                         text = "LOGIN",
-                        color = MaterialTheme.colorScheme.onPrimary,
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                         fontFamily = FontFamily.Cursive,
                         fontWeight = FontWeight.Bold
                     )
