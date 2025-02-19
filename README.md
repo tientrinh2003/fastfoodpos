@@ -109,7 +109,7 @@ The application follows the **MVVM (Model-View-ViewModel)** architecture:
 
 1. Clone this repository:
    ```sh
-   git clone https://github.com/yourusername/fastfood-pos.git
+   git clone https://github.com/yourusername/fastfood-pos.git](https://github.com/tientrinh2003/fastfoodpos.git)
    ```
 2. Open the project in **Android Studio**.
 3. Sync Gradle and install dependencies.
